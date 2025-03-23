@@ -1,10 +1,5 @@
-# src/adapter/dto/problem_dto.py
-from pydantic import BaseModel, HttpUrl
-
-
-# src/adapter/api/problem_router.py
-from fastapi import APIRouter, Depends, HTTPException
-from dependency_injector.wiring import Provide, inject
+from fastapi import APIRouter, HTTPException, Depends
+from dependency_injector.wiring import inject, Provide
 
 from src.adapter.dto.problem_dto import (
     ProblemPredictDifficultyRequest,
@@ -14,7 +9,6 @@ from src.application.usecases.predict_problem_difficulty import (
     PredictProblemDifficultyUseCase,
 )
 from src.containers import Container
-
 
 router = APIRouter(tags=["Problem"])
 
@@ -26,14 +20,14 @@ router = APIRouter(tags=["Problem"])
 @inject
 async def predict_difficulty(
     body: ProblemPredictDifficultyRequest,
-    predict_difficulty_usecase: PredictProblemDifficultyUseCase = Depends(
-        Provide[Container.predict_difficulty_usecase]
+    predict_difficulty_uc: PredictProblemDifficultyUseCase = Depends(
+        Provide[Container.predict_difficulty_uc]
     ),
-):
+) -> ProblemPredictDifficultyResponse:
     """문제 URL을 받아 난이도를 예측합니다."""
 
     # 유스케이스 실행
-    problem = await predict_difficulty_usecase.execute(str(body.url))
+    problem = await predict_difficulty_uc.execute(str(body.url))
 
     if not problem:
         raise HTTPException(
@@ -43,7 +37,7 @@ async def predict_difficulty(
     # 응답 생성
     return ProblemPredictDifficultyResponse(
         platform=problem.platform,
-        difficulty=problem.difficulty.value,
+        difficulty=problem.difficulty,
         reason=problem.difficulty_explanation,
         title=problem.title,
         url=problem.url,

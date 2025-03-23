@@ -4,7 +4,7 @@ from typing import Optional
 import requests
 from bs4 import BeautifulSoup
 
-from src.domain.entities.problem import Problem, PlatformType
+from src.domain.entities.problem import DifficultyLevel, Problem, PlatformType
 from src.domain.repositories.problem_repository import ProblemRepository
 
 
@@ -47,6 +47,8 @@ class BaekjoonProblemRepository(ProblemRepository):
                 content=problem_content,
                 platform=PlatformType.BAEKJOON,
                 url=url,
+                difficulty=DifficultyLevel.UNKNOWN,
+                difficulty_explanation="",
             )
         except Exception:
             return None

@@ -4,7 +4,7 @@ from typing import Optional
 import requests
 from bs4 import BeautifulSoup
 
-from src.domain.entities.problem import Problem
+from src.domain.entities.problem import DifficultyLevel, PlatformType, Problem
 from src.domain.repositories.problem_repository import ProblemRepository
 
 
@@ -15,8 +15,10 @@ class ProgrammersProblemRepository(ProblemRepository):
         """
         # URL 유효성 검사
         if not re.match(
-            r"https://school\.programmers\.co\.kr/learn/courses/\d+/lessons/\d+", url
+            r"^https?://(school\.)?programmers\.co\.kr/learn/courses/\d+/lessons/\d+/?$",
+            url,
         ):
+            print(url, "??")
             return None
 
         try:
@@ -44,10 +46,14 @@ class ProgrammersProblemRepository(ProblemRepository):
             if content_element:
                 # HTML 태그 제거하고 텍스트만 추출
                 problem_content = content_element.get_text(separator="\n", strip=True)
-
             # Problem 엔티티 생성
             return Problem(
-                title=title, content=problem_content, platform="프로그래머스", url=url
+                title=title,
+                content=problem_content,
+                platform=PlatformType.PROGRAMMERS,
+                url=url,
+                difficulty=DifficultyLevel.UNKNOWN,
+                difficulty_explanation="",
             )
         except Exception:
             return None

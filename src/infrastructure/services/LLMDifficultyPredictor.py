@@ -35,6 +35,7 @@ class LLMDifficultyPredictor(DifficultyPredictor):
             """
 
             # LLM 클라이언트를 통해 모델 호출
+
             response = self._llm_client.chat(
                 model=self.model_name, messages=[{"role": "user", "content": prompt}]
             )

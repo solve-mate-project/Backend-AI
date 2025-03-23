@@ -1,4 +1,4 @@
-from pydantic import BaseModel, HttpUrl
+from pydantic import BaseModel, HttpUrl, Field
 
 
 class ProblemPredictDifficultyRequest(BaseModel):
@@ -6,8 +6,8 @@ class ProblemPredictDifficultyRequest(BaseModel):
 
 
 class ProblemPredictDifficultyResponse(BaseModel):
-    platform: str
-    difficulty: str
-    reason: str
-    title: str
-    url: str
+    platform: str = Field(title="플랫폼")
+    difficulty: str = Field(title="난이도")
+    reason: str = Field(title="난이도 설명")
+    title: str = Field(title="문제 제목")
+    url: str = Field(title="문제 URL")

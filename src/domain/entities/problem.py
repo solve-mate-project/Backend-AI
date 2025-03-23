@@ -8,6 +8,7 @@ class DifficultyLevel(str, Enum):
     NORMAL = "NORMAL"
     HARD = "HARD"
     ERROR = "ERROR"
+    UNKNOWN = "UNKNOWN"
 
 
 class PlatformType(str, Enum):
@@ -23,5 +24,5 @@ class Problem:
     content: str
     platform: PlatformType
     url: str
-    difficulty: Optional[DifficultyLevel] = None
-    difficulty_explanation: Optional[str] = None
+    difficulty: DifficultyLevel
+    difficulty_explanation: str

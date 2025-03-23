@@ -5,7 +5,7 @@ from typing import Optional
 import requests
 from bs4 import BeautifulSoup
 
-from src.domain.entities.problem import Problem, PlatformType
+from src.domain.entities.problem import DifficultyLevel, Problem, PlatformType
 from src.domain.repositories.problem_repository import ProblemRepository
 
 
@@ -64,6 +64,8 @@ class LeetcodeProblemRepository(ProblemRepository):
                 content=content,
                 platform=PlatformType.LEETCODE,
                 url=url,
+                difficulty=DifficultyLevel.UNKNOWN,
+                difficulty_explanation="",
             )
         except Exception as e:
             print(f"리트코드 문제 가져오기 오류: {str(e)}")

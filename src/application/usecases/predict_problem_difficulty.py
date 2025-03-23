@@ -2,6 +2,7 @@ from typing import Optional
 
 from src.domain.entities.problem import Problem
 from src.domain.repositories.problem_repository import ProblemRepository
+from src.domain.repositories.difficulty_log_repository import DifficultyLogRepository
 from src.domain.services.difficulty_predictor import DifficultyPredictor
 from src.infrastructure.repositories.problem_repository_factory import (
     ProblemRepositoryFactory,
@@ -13,13 +14,16 @@ class PredictProblemDifficultyUseCase:
         self,
         problem_repository_factory: ProblemRepositoryFactory,
         difficulty_predictor: DifficultyPredictor,
+        difficulty_log_repository: DifficultyLogRepository,
     ):
         self._problem_repository_factory = problem_repository_factory
         self._difficulty_predictor = difficulty_predictor
+        self._difficulty_log_repository = difficulty_log_repository
 
     async def execute(self, url: str) -> Optional[Problem]:
         """
         문제 URL을 받아 문제 정보를 가져오고 난이도를 예측합니다.
+        예측된 난이도는 로그로 저장됩니다.
 
         Args:
             url: 문제 URL
@@ -50,5 +54,10 @@ class PredictProblemDifficultyUseCase:
         # 결과 업데이트
         problem.difficulty = difficulty
         problem.difficulty_explanation = explanation
+
+        # 로그 저장
+        await self._difficulty_log_repository.save_difficulty_prediction_log(
+            problem, self._difficulty_predictor.model_name
+        )
 
         return problem
