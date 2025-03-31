@@ -11,11 +11,7 @@ DBBase = declarative_base()
 
 
 def create_db_engine(db_user: str, db_pwd: str, db_host: str, db_name: str):
-    return create_engine(
-        f"mysql+pymysql://{db_user}:{db_pwd}@{db_host}:3306/{db_name}",
-        pool_pre_ping=True,
-        echo=False,
-    )
+    return create_engine("sqlite:///./db.sqlite3")
 
 
 class Database:
